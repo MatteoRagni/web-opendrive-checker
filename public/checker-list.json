@@ -1,0 +1,27 @@
+{
+  "checkers": [
+    "check_asam_xodr_xml_valid_xml_document",
+    "check_asam_xodr_xml_root_tag_is_opendrive",
+    "check_asam_xodr_xml_fileheader_is_present",
+    "check_asam_xodr_xml_version_is_defined",
+    "check_asam_xodr_xml_valid_schema",
+    "check_asam_xodr_road_lane_level_true_one_side",
+    "check_asam_xodr_road_lane_access_no_mix_of_deny_or_allow",
+    "check_asam_xodr_road_lane_link_lanes_across_lane_sections",
+    "check_asam_xodr_road_linkage_is_junction_needed",
+    "check_asam_xodr_road_lane_link_zero_width_at_start",
+    "check_asam_xodr_road_lane_link_zero_width_at_end",
+    "check_asam_xodr_road_lane_link_new_lane_appear",
+    "check_asam_xodr_junctions_connection_connect_road_no_incoming_road",
+    "check_asam_xodr_junctions_connection_one_connection_element",
+    "check_asam_xodr_junctions_connection_one_link_to_incoming",
+    "check_asam_xodr_junctions_connection_start_along_linkage",
+    "check_asam_xodr_junctions_connection_end_opposite_linkage",
+    "check_asam_xodr_road_geometry_parampoly3_length_match",
+    "check_asam_xodr_road_lane_border_overlap_with_inner_lanes",
+    "check_asam_xodr_road_geometry_parampoly3_arclength_range",
+    "check_asam_xodr_road_geometry_parampoly3_normalized_range",
+    "check_asam_xodr_performance_avoid_redundant_info",
+    "check_asam_xodr_lane_smoothness_contact_point_no_horizontal_gaps"
+  ]
+}
