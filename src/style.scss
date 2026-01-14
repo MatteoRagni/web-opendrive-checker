@@ -1,3 +1,5 @@
-@import "tailwindcss";
-@import "tailwindcss-primeui";
-@import 'primeicons/primeicons.css'
+@import "bootstrap/scss/bootstrap";
+// Update the import directory to point to it‘s location within node_modules
+$bootstrap-icons-font-dir: "bootstrap-icons/font/fonts";
+// Import the Sass files as usual
+@import "bootstrap-icons/font/bootstrap-icons";

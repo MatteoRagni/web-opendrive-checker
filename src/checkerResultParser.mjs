@@ -7,6 +7,19 @@ function transform(xmlDoc, tagName, resultObj) {
 }
 
 
+function defineCheckerStatus() {
+  const enumValue = (name) => Object.freeze({toString: () => name});
+  return Object.freeze({
+    Completed: enumValue("completed"),
+    Skipped: enumValue("skipped"),
+    Error: enumValue("error")
+  })
+}
+
+
+const CheckerStatus = defineCheckerStatus()
+
+
 class Param_ {
   constructor(xmlData) {
     this.name = xmlData.getAttribute("name")
@@ -75,6 +88,8 @@ class Issue_ {
 
 
 class Checker_ {
+  #status = "error"
+
   constructor(xmlData) {
     this.Params = transform(xmlData, "Param", Param_)
     this.Issues = transform(xmlData, "Issue", Issue_)
@@ -84,7 +99,7 @@ class Checker_ {
     this.id = xmlData.getAttribute("checkerId")
     this.description = xmlData.getAttribute("description")
     this.summary = xmlData.getAttribute("summary")
-    this.status = xmlData.getAttribute("status")
+    this.#status = xmlData.getAttribute("status")
   }
 
   countIssues() {
@@ -93,6 +108,14 @@ class Checker_ {
 
   hasIssues() {
     return this.countIssues() > 0
+  }
+
+  get status() {
+    if (this.#status == "completed")
+      return CheckerStatus.Completed
+    if (this.#status == "skipped")
+      return CheckerStatus.Skipped
+    return CheckerStatus.Error
   }
 }
 
@@ -116,6 +139,10 @@ class CheckerBundle_ {
   hasIssues() {
     return this.countIssues() > 0
   }
+
+  getCheckersByStatus(status) {
+    return this.Checkers.filter(checker => checker.status == status)
+  }
 }
 
 
@@ -132,4 +159,9 @@ class CheckerResult_ {
   }
 }
 
-export const CheckerResult = CheckerResult_;
+
+
+export default {
+  CheckerResult: CheckerResult_,
+  CheckerStatus
+};
