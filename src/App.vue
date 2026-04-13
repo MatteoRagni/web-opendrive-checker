@@ -6,8 +6,16 @@
           <i class="bi bi-car-front-fill me-2 text-primary"></i>
           ASAM OpenDRIVE Quality Checker
         </span>
-        <div class="d-flex" v-if="appStore.currentStage !== 'LOAD'">
-          <button class="btn btn-outline-danger btn-sm" @click="confirmReturn">
+        <div class="d-flex align-items-center">
+          <button 
+            type="button" 
+            class="btn btn-link text-decoration-none text-secondary me-3" 
+            data-bs-toggle="modal" 
+            data-bs-target="#aboutModal">
+            <i class="bi bi-info-circle me-1"></i> About
+          </button>
+          
+          <button v-if="appStore.currentStage !== 'LOAD'" class="btn btn-outline-danger btn-sm" @click="confirmReturn">
             <i class="bi bi-arrow-return-left me-1"></i> Start Over
           </button>
         </div>
@@ -22,6 +30,9 @@
       </div>
     </div>
 
+    <!-- About Modal -->
+    <AboutModal />
+
     <BottomBanner />
   </div>
 </template>
@@ -34,6 +45,7 @@ import OpenDriveLoader from './components/OpenDriveLoader.vue'
 import AnalysisProgress from './components/AnalysisProgress.vue'
 import CheckerResults from './components/CheckerResults.vue'
 import BottomBanner from './components/BottomBanner.vue'
+import AboutModal from './components/AboutModal.vue'
 
 export default {
   name: 'App',
@@ -41,7 +53,8 @@ export default {
     OpenDriveLoader,
     AnalysisProgress,
     CheckerResults,
-    BottomBanner
+    BottomBanner,
+    AboutModal
   },
   computed: {
     ...mapStores(useAppStore),

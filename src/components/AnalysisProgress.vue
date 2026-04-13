@@ -36,15 +36,27 @@ import { mapStores } from 'pinia'
 import { useAppStore } from '../store/index.js'
 
 const FUNNY_QUOTES = [
-  "Reticulating splines...",
-  "Fueling the WebAssembly engine...",
+  "Calculating clothoids... they're feeling extra curvy today.",
+  "Negotiating with the standard. It's not budging...",
   "Searching for lost lanes...",
-  "Teaching vectors how to draw...",
+  "Almost there! Just making sure the road actually stays on the ground.",
   "Polishing the OpenDRIVE XML tags...",
-  "Calibrating the curvature...",
+  "Looking for the lost elevation profile. It was here a minute ago...",
   "Downloading more RAM...",
   "Asking the Python snake nicely...",
-  "Preparing the checker bundle..."
+  "Trying to convince the schema that a 90-degree turn at 100km/h is 'fine'.",
+  "Counting lanes. 1, 2, 42... Wait, let's start over.",
+  "Attempting to solve the spiral. The spiral is winning.",
+  "Checking if your lanes are actually connected or just social distancing.",
+  "The ASAM Checker is currently judging your life choices.",
+  "Asking the schema if 'close enough' counts as valid. (It said no.)",
+  "Checking for logic... Still checking... Logic not found. Checking again.",
+  "Translating 'Human Road Intent' into 'Strict Machine Logic'.",
+  "The XML parser is currently taking a deep breath before reading your junctions.",
+  "Checking if a car can drive this without entering another dimension.",
+  "Asking the elevation profile why it suddenly thinks it's a skyscraper.",
+  "Confirming that your road stays on the planet. Most of the time.",
+  "Cheering up the reference line. It's having an identity crisis."
 ]
 
 export default {
@@ -52,7 +64,7 @@ export default {
   data() {
     return {
       quoteInterval: null,
-      currentQuote: "Warming up...",
+      currentQuote: FUNNY_QUOTES[Math.floor(Math.random() * FUNNY_QUOTES.length)],
       errorOccurred: false,
       worker: null
     }
@@ -76,7 +88,7 @@ export default {
       this.quoteInterval = setInterval(() => {
         const quote = FUNNY_QUOTES[Math.floor(Math.random() * FUNNY_QUOTES.length)];
         this.currentQuote = quote;
-      }, 3000);
+      }, 2000);
     },
     stopQuotes() {
       if (this.quoteInterval) {
