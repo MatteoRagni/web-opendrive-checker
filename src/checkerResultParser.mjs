@@ -8,7 +8,7 @@ function transform(xmlDoc, tagName, resultObj) {
 
 
 function defineCheckerStatus() {
-  const enumValue = (name) => Object.freeze({toString: () => name});
+  const enumValue = (name) => Object.freeze({ toString: () => name });
   return Object.freeze({
     Completed: enumValue("completed"),
     Skipped: enumValue("skipped"),
@@ -83,7 +83,7 @@ class Issue_ {
     this.description = xmlData.getAttribute("description")
     this.level = xmlData.getAttribute("level")
     this.ruleId = xmlData.getAttribute("ruleUID")
-  }  
+  }
 }
 
 
@@ -154,7 +154,7 @@ class CheckerResult_ {
     this.#data = parser.parseFromString(xmlString, "text/xml").documentElement
 
     this.CheckerBundles = transform(this.#data, "CheckerBundle", CheckerBundle_)
-    
+
     this.version = this.#data.getAttribute("version")
   }
 }

@@ -1,5 +1,24 @@
-@import "bootstrap/scss/bootstrap";
+$white: #ffffff;
+
+$theme-colors: (
+    "light":      #d1e2ec,
+    "dark":       #11121d,
+    "primary":    #043b60,
+    "secondary":  #2f6498,
+    "info":       #3a94c1,
+    "accent1":    #11506d,
+    "accent2":    #5164d4,
+    "accent3":    #83c6e8,
+    "success":    #07a25a,
+    "warning":    #e4ca08,
+    "danger":     #f40703,
+);
+
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+
 // Update the import directory to point to it‘s location within node_modules
 $bootstrap-icons-font-dir: "bootstrap-icons/font/fonts";
 // Import the Sass files as usual
-@import "bootstrap-icons/font/bootstrap-icons";
+@import "../node_modules/bootstrap-icons/font/bootstrap-icons";

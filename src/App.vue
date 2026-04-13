@@ -1,36 +1,66 @@
 <template>
-  <div class="container py-4 px-3 mx-auto">
-    <site-header />
-    <!--<python-loader></python-loader>-->
-    <div class="container mb-3">
-      <!--<LoadOpenDRIVE />-->
-      <checker-results :xmlString="content"></checker-results>
-      <button @click="click">load</button>
-      <p>{{ content }}</p>
+  <div class="h-100 d-flex flex-column">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+      <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1 d-flex align-items-center">
+          <i class="bi bi-car-front-fill me-2 text-primary"></i>
+          ASAM OpenDRIVE Quality Checker
+        </span>
+        <div class="d-flex" v-if="appStore.currentStage !== 'LOAD'">
+          <button class="btn btn-outline-danger btn-sm" @click="confirmReturn">
+            <i class="bi bi-arrow-return-left me-1"></i> Start Over
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="flex-grow-1 overflow-auto bg-body-tertiary">
+      <div class="container py-4">
+        <OpenDriveLoader v-if="appStore.currentStage === 'LOAD'" />
+        <AnalysisProgress v-else-if="appStore.currentStage === 'ANALYZE'" />
+        <CheckerResults v-else-if="appStore.currentStage === 'RESULTS'" />
+      </div>
     </div>
+
+    <BottomBanner />
   </div>
 </template>
 
 <script>
-// import PythonLoader from './components/PythonLoader.vue';
-import SiteHeader from './components/SiteHeader.vue';
-// import LoadOpenDRIVE from './components/LoadOpenDRIVE.vue';
-import CheckerResults from './components/CheckerResults.vue';
+import { mapStores } from 'pinia'
+import { useAppStore } from './store/index.js'
 
-const DEFAULT = `<?xml version='1.0' encoding='UTF-8' standalone='no'?> <CheckerResults version="v1.0.0-rc.1"> <CheckerBundle build_date="2025-09-19" description="OpenDrive checker bundle" name="xodrBundle" version="v1.0.0-rc.1" summary="23 checker(s) are executed. 5 checker(s) are completed. 18 checker(s) are skipped. 0 checker(s) have internal error and 0 checker(s) do not contain status."> <Param name="InputFile" value="/opendrive.xodr"/> <Param name="resultFile" value="/result.xqar"/> <Checker status="completed" checkerId="check_asam_xodr_xml_valid_xml_document" description="The input file must be a valid XML document." summary="0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.0.0:xml.valid_xml_document"/> </Checker> <Checker status="completed" checkerId="check_asam_xodr_xml_root_tag_is_opendrive" description="The root element of a valid XML document must be OpenSCENARIO." summary="0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.0.0:xml.root_tag_is_opendrive"/> </Checker> <Checker status="completed" checkerId="check_asam_xodr_xml_fileheader_is_present" description="Below the root element a tag with FileHeader must be defined." summary="0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.0.0:xml.fileheader_is_present"/> </Checker> <Checker status="completed" checkerId="check_asam_xodr_xml_version_is_defined" description="The FileHeader tag must have the attributes revMajor and revMinor and of type unsignedShort." summary="0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.0.0:xml.version_is_defined"/> </Checker> <Checker status="completed" checkerId="check_asam_xodr_xml_valid_schema" description="Input xml file must be valid according to the schema." summary="2 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.0.0:xml.valid_schema"/> <Issue issueId="0" description="Issue flagging when input file does not follow its version schema" level="1" ruleUID="asam.net:xodr:1.0.0:xml.valid_schema"> <Locations description="Element 'object', attribute 'virtual': The attribute 'virtual' is not allowed."> <FileLocation column="0" row="18402"/> </Locations> </Issue> <Issue issueId="1" description="Issue flagging when input file does not follow its version schema" level="1" ruleUID="asam.net:xodr:1.0.0:xml.valid_schema"> <Locations description="Element 'object', attribute 'virtual': The attribute 'virtual' is not allowed."> <FileLocation column="0" row="39438"/> </Locations> </Issue> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_road_lane_level_true_one_side" description="Check if there is any @Level=False after being True until the lane border." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.7.0:road.lane.level_true_one_side"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_road_lane_access_no_mix_of_deny_or_allow" description="Check if there is mixed content on access rules for the same sOffset on lanes." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.7.0:road.lane.access.no_mix_of_deny_or_allow"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_road_lane_link_lanes_across_lane_sections" description="Lanes that continues across the lane sections shall be connected in both directions." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.4.0:road.lane.link.lanes_across_lane_sections"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_road_linkage_is_junction_needed" description="Two roads shall only be linked directly, if the linkage is clear. If the relationship to successor or predecessor is ambiguous, junctions shall be used." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.4.0:road.linkage.is_junction_needed"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_road_lane_link_zero_width_at_start" description="Lanes that have a width of zero at the beginning of the lane section shall have no predecessor element." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.7.0:road.lane.link.zero_width_at_start"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_road_lane_link_zero_width_at_end" description="Lanes that have a width of zero at the end of the lane section shall have no successor element." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.7.0:road.lane.link.zero_width_at_end"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_road_lane_link_new_lane_appear" description="If a new lane appears besides, only the continuing lane shall be connected to the original lane, not the appearing lane." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.4.0:road.lane.link.new_lane_appear"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_junctions_connection_connect_road_no_incoming_road" description="Connecting roads shall not be incoming roads." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.4.0:junctions.connection.connect_road_no_incoming_road"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_junctions_connection_one_connection_element" description="Each connecting road shall be represented by exactly one element. A connecting road may contain as many lanes as required." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.7.0:junctions.connection.one_connection_element"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_junctions_connection_one_link_to_incoming" description="Each connecting road shall be associated with at most one &lt;connection&gt; element per incoming road. A connecting road shall only have the &lt;laneLink&gt; element for that direction." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.8.0:junctions.connection.one_link_to_incoming"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_junctions_connection_start_along_linkage" description="The value &quot;start&quot; shall be used to indicate that the connecting road runs along the linkage indicated in the element." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.7.0:junctions.connection.start_along_linkage"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_junctions_connection_end_opposite_linkage" description="The value &quot;end&quot; shall be used to indicate that the connectingroad runs along the opposite direction of the linkage indicated in the element." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.7.0:junctions.connection.end_opposite_linkage"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_road_geometry_parampoly3_length_match" description="The actual curve length, as determined by numerical integration over the parameter range, should match '@Length'." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.7.0:road.geometry.parampoly3.length_match"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_road_lane_border_overlap_with_inner_lanes" description="Lane borders shall not intersect inner lanes." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.4.0:road.lane.border.overlap_with_inner_lanes"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_road_geometry_parampoly3_arclength_range" description="If @prange='arcLength', p shall be chosen in [0, @Length from geometry]." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.7.0:road.geometry.parampoly3.arclength_range"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_road_geometry_parampoly3_normalized_range" description="If @prange='normalized', p shall be chosen in [0, 1]." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.7.0:road.geometry.parampoly3.normalized_range"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_performance_avoid_redundant_info" description="Redundant elements should be avoided." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.7.0:performance.avoid_redundant_info"/> </Checker> <Checker status="skipped" checkerId="check_asam_xodr_lane_smoothness_contact_point_no_horizontal_gaps" description="Two connected drivable lanes shall have no horizontal gaps." summary="Preconditions are not satisfied. Skip the check. 0 issue(s) are found."> <AddressedRule ruleUID="asam.net:xodr:1.7.0:lane_smoothness.contact_point_no_horizontal_gaps"/> </Checker> </CheckerBundle> </CheckerResults>`
+import OpenDriveLoader from './components/OpenDriveLoader.vue'
+import AnalysisProgress from './components/AnalysisProgress.vue'
+import CheckerResults from './components/CheckerResults.vue'
+import BottomBanner from './components/BottomBanner.vue'
 
 export default {
-  components: {SiteHeader, CheckerResults},
-  data() {
-    return {
-      content: ""
-    }
+  name: 'App',
+  components: {
+    OpenDriveLoader,
+    AnalysisProgress,
+    CheckerResults,
+    BottomBanner
+  },
+  computed: {
+    ...mapStores(useAppStore),
   },
   methods: {
-    click() {
-      this.content = DEFAULT
+    confirmReturn() {
+      if (confirm('Are you sure you want to return to the start? Any unsaved results will be lost.')) {
+        this.appStore.resetApp()
+      }
     }
   }
 }
 </script>
 
+<style>
+html, body, #app {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+</style>
