@@ -12,15 +12,18 @@ export default defineConfig({
   optimizeDeps: { exclude: ["pyodide"] },
   plugins: [viteStaticCopyPyodide(), vue()],
   css: {
-     preprocessorOptions: {
-        scss: {
-          silenceDeprecations: [
-            'import',
-            'mixed-decls',
-            'color-functions',
-            'global-builtin',
-          ],
-        },
-     },
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: [
+          'import',
+          'mixed-decls',
+          'color-functions',
+          'global-builtin',
+        ],
+      },
+    },
   },
+  worker: {
+    format: 'es'
+  }
 })
